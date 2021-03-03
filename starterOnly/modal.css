@@ -219,10 +219,15 @@ input {
   display: block;
   margin-top: 7px;
   margin-bottom: 7px;
-  text-align: right;
-  line-height: 0.3;
+  text-align: left;
+  line-height: .7rem;
   opacity: 0;
   transition: 0.3s;
+}
+.formData.data-left[data-error]::after {
+  text-align: left;
+  margin-left: 35px;
+  margin-top: -7px;
 }
 .formData[data-error-visible="true"]::after {
   opacity: 1;
@@ -242,6 +247,7 @@ input[data-error]::after {
   margin-left: 36px;
   font-size: 12px;
   font-weight: normal;
+  cursor: pointer;
 }
 .checkbox-label .checkbox-icon,
 .checkbox2-label .checkbox-icon {
@@ -337,6 +343,24 @@ input[data-error]::after {
   cursor: pointer;
   border: 0;
 }
+
+.form {
+  display: block;
+}
+.formValid {
+  display: none;
+  animation-name: formValid;
+  animation-duration: 1s;
+  animation-fill-mode: both;
+}
+.formValid .formValid-title {
+  text-align: center;
+  font-weight: 400;
+  line-height: 51px;
+  font-size: 36px;
+  margin: 100px 0px;
+}
+
 /* custom select styles */
 .custom-select {
   position: relative;
@@ -540,3 +564,12 @@ footer {
   }
 }
 
+@keyframes formValid {
+  from {
+    opacity: 0;
+    transform: translateY(-150px);
+  }
+  to {
+    opacity: 1;
+  }
+}

@@ -7,60 +7,185 @@ function editNav() {
   }
 }
 
-// DOM Elements
 const modalbg = document.querySelector(".bground");
 const modalBtn = document.querySelectorAll(".modal-btn");
 const jsContent = document.getElementById("js-content");
 const jsClose = modalbg.querySelector(".js-close");
-const formData = document.querySelectorAll(".formData");
-const form = document.forms["inscription"];
+const jsCloseValid = document.getElementById("js-close-valid");
 
-// launch modal event
 modalBtn.forEach((btn) => btn.addEventListener("click", launchModal));
 
-// launch modal form
 function launchModal(e) {
   e.preventDefault();
-  modalbg.style.display = "block";
-  modalbg.removeAttribute("aria-hidden");
-  modalbg.setAttribute("aria-modal", "true");
+  setDisplayModal();
+  setArias();
   modalbg.addEventListener("click", closeModal);
   jsContent.addEventListener("click", stopPropagation);
   jsClose.addEventListener("click", closeModal);
+  jsCloseValid.addEventListener("click", closeModal);
 }
-
-const animationDuration = 800;
 
 function closeModal(e) {
   e.preventDefault();
+  var animationDuration = 800;
   window.setTimeout(function () {
-    modalbg.style.display = "none";
+    setDisplayModal();
   }, animationDuration);
-  modalbg.setAttribute("aria-hidden", "true");
-  modalbg.removeAttribute("aria-modal");
+  setArias();
   modalbg.removeEventListener("click", closeModal);
   jsContent.removeEventListener("click", stopPropagation);
   jsClose.removeEventListener("click", closeModal);
+  jsCloseValid.removeEventListener("click", closeModal);
 }
 
 function stopPropagation(e) {
   e.stopPropagation();
 }
 
+function setDisplayModal() {
+  if (modalbg.style.display === "none") {
+    return (modalbg.style.display = "block");
+  } else {
+    return (modalbg.style.display = "none");
+  }
+}
+
+function setArias() {
+  return setAriaHidden(), setAriaModal();
+}
+
+function setAriaHidden() {
+  if (modalbg.getAttribute("aria-hidden") === "false") {
+    return modalbg.setAttribute("aria-hidden", "true");
+  } else {
+    return modalbg.setAttribute("aria-hidden", "false");
+  }
+}
+
+function setAriaModal() {
+  if (modalbg.getAttribute("aria-modal") === "true") {
+    return modalbg.setAttribute("aria-modal", "false");
+  } else {
+    return modalbg.setAttribute("aria-modal", "true");
+  }
+}
+
 window.addEventListener("keydown", (e) => {
   if (e.key === "Esc" || e.key === "Escape") {
-    closeModal(e);
+    if (modalbg.getAttribute("aria-hidden") === "false") {
+      closeModal(e);
+    }
   }
 });
 
-form.addEventListener("submit", function (e) {
-  if (!form["first"].value) {
-    e.preventDefault();
-    formData[0].dataset.error = "Veuillez remplir le champs.";
-    formData[0].dataset.errorVisible = "true";
-  }
-  var zz = form["first"].value;
-  console.log(zz);
-  console.log(zz.lengh);
-  debugger;
+const inputs = [
+  document.getElementById("first"),
+  document.getElementById("last"),
+  document.getElementById("email"),
+  document.getElementById("birthdate"),
+  document.getElementById("quantity"),
+  document.getElementById("checkbox1"),
+];
+
+document.getElementById("inscription").addEventListener("submit", function (e) {
+  e.preventDefault();
+  validateText(inputs[0], "prénom");
+  validateText(inputs[1], "nom");
+  validateMail(inputs[2]);
+  validateDate(inputs[3]);
+  validateNbTournament(inputs[4]);
+  validateCondition(inputs[5]);
+  validate();
 });
+
+function validateText(input, name) {
+  inputValidation(
+    input,
+    "^[a-zA-Z- ]{2,20}$",
+    "Veuillez remplir le champs " + name,
+    "Le champs doit contenir que des lettres et avoir au moins 2 caractères"
+  );
+}
+
+function validateMail(input) {
+  inputValidation(
+    input,
+    "^[a-zA-Z0-9.-_]+[@]{1}[a-zA-Z0-9.-_]+[.]{1}[a-z]{2,10}$",
+    "Veuillez remplir le champs mail",
+    "Veuillez entrer une adresse mail valide"
+  );
+}
+
+function validateDate(input) {
+  inputValidation(input, "", "Veuillez entrer votre date de naissance");
+}
+
+function validateNbTournament(input) {
+  inputValidation(
+    input,
+    "^[0-9]{1,2}$",
+    "Veuillez entrer le nombre de tournois participés",
+    "Veulliez entrer un nombre compris entre 0 et 99"
+  );
+}
+
+function validateCondition(input) {
+  inputValidationChecked(
+    input,
+    "Veuillez accepter les conditions d'utilisation"
+  );
+}
+
+function inputValidation(input, pattern, textIsEmpty, textNoValid) {
+  if (input.value.trim() === "") {
+    return inputError(input, textIsEmpty);
+  } else {
+    return inputRegExp(input, pattern, textNoValid);
+  }
+}
+
+function inputRegExp(input, pattern, textNoValid) {
+  var pattern = new RegExp(pattern, "g");
+
+  if (pattern.test(input.value)) {
+    return inputValid(input);
+  } else {
+    return inputError(input, textNoValid);
+  }
+}
+
+function inputValidationChecked(input, textNoValid) {
+  if (input.checked) {
+    return inputValid(input);
+  } else {
+    return inputError(input, textNoValid);
+  }
+}
+
+function inputError(input, text) {
+  return (
+    (input.parentNode.dataset.error = text),
+    (input.parentNode.dataset.errorVisible = "true")
+  );
+}
+
+function inputValid(input) {
+  return (
+    (input.parentNode.dataset.error = ""),
+    (input.parentNode.dataset.errorVisible = "false")
+  );
+}
+
+function validate() {
+  var validateInputs = 0;
+
+  for (var i = 0; i < inputs.length; i++) {
+    if (inputs[i].parentNode.dataset.error == "") {
+      validateInputs++;
+    }
+  }
+  if (inputs.length == validateInputs) {
+    document.getElementById("inscription").style.display = "none";
+    document.getElementById("form-valid").style.display = "block";
+  }
+}
