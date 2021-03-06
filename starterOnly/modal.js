@@ -87,6 +87,15 @@ const inputs = [
   document.getElementById("checkbox1"),
 ];
 
+const inputsRadio = [
+  document.getElementById("location1"),
+  document.getElementById("location2"),
+  document.getElementById("location3"),
+  document.getElementById("location4"),
+  document.getElementById("location5"),
+  document.getElementById("location6"),
+];
+
 document.getElementById("inscription").addEventListener("submit", function (e) {
   e.preventDefault();
   validateText(inputs[0], "prénom");
@@ -94,6 +103,7 @@ document.getElementById("inscription").addEventListener("submit", function (e) {
   validateMail(inputs[2]);
   validateDate(inputs[3]);
   validateNbTournament(inputs[4]);
+  validateCity(inputsRadio);
   validateCondition(inputs[5]);
   validate();
 });
@@ -151,6 +161,20 @@ function inputRegExp(input, pattern, textNoValid) {
     return inputValid(input);
   } else {
     return inputError(input, textNoValid);
+  }
+}
+
+function validateCity(inputs) {
+  var inputIsChecked = null;
+  inputs.forEach((input) => {
+    if (input.checked) {
+      inputIsChecked++;
+    }
+  });
+  if (inputIsChecked == 1) {
+    return inputValid(inputs[0]);
+  } else {
+    return inputError(inputs[0], "Veuillez choisir une ville");
   }
 }
 
