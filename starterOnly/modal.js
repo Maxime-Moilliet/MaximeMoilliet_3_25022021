@@ -1,5 +1,14 @@
+import {
+  validateText,
+  validateMail,
+  validateDate,
+  validateNbTournament,
+  validateCity,
+  validateCondition,
+} from "./inputValidation.js";
+
 function editNav() {
-  var x = document.getElementById("myTopnav");
+  let x = document.getElementById("myTopnav");
   if (x.className === "topnav") {
     x.className += " responsive";
   } else {
@@ -27,7 +36,7 @@ function launchModal(e) {
 
 function closeModal(e) {
   e.preventDefault();
-  var animationDuration = 800;
+  let animationDuration = 800;
   window.setTimeout(function () {
     setDisplayModal();
   }, animationDuration);
@@ -108,108 +117,16 @@ document.getElementById("inscription").addEventListener("submit", function (e) {
   validate();
 });
 
-function validateText(input, name) {
-  inputValidation(
-    input,
-    "^[a-zA-Z- ]{2,20}$",
-    "Veuillez remplir le champs " + name,
-    "Le champs doit contenir que des lettres et avoir au moins 2 caractères"
-  );
-}
-
-function validateMail(input) {
-  inputValidation(
-    input,
-    "^[a-zA-Z0-9.-_]+[@]{1}[a-zA-Z0-9.-_]+[.]{1}[a-z]{2,10}$",
-    "Veuillez remplir le champs mail",
-    "Veuillez entrer une adresse mail valide"
-  );
-}
-
-function validateDate(input) {
-  inputValidation(input, "", "Veuillez entrer votre date de naissance");
-}
-
-function validateNbTournament(input) {
-  inputValidation(
-    input,
-    "^[0-9]{1,2}$",
-    "Veuillez entrer le nombre de tournois participés",
-    "Veulliez entrer un nombre compris entre 0 et 99"
-  );
-}
-
-function validateCondition(input) {
-  inputValidationChecked(
-    input,
-    "Veuillez accepter les conditions d'utilisation"
-  );
-}
-
-function inputValidation(input, pattern, textIsEmpty, textNoValid) {
-  if (input.value.trim() === "") {
-    return inputError(input, textIsEmpty);
-  } else {
-    return inputRegExp(input, pattern, textNoValid);
-  }
-}
-
-function inputRegExp(input, pattern, textNoValid) {
-  var pattern = new RegExp(pattern, "g");
-
-  if (pattern.test(input.value)) {
-    return inputValid(input);
-  } else {
-    return inputError(input, textNoValid);
-  }
-}
-
-function validateCity(inputs) {
-  var inputIsChecked = null;
-  inputs.forEach((input) => {
-    if (input.checked) {
-      inputIsChecked++;
-    }
-  });
-  if (inputIsChecked == 1) {
-    return inputValid(inputs[0]);
-  } else {
-    return inputError(inputs[0], "Veuillez choisir une ville");
-  }
-}
-
-function inputValidationChecked(input, textNoValid) {
-  if (input.checked) {
-    return inputValid(input);
-  } else {
-    return inputError(input, textNoValid);
-  }
-}
-
-function inputError(input, text) {
-  return (
-    (input.parentNode.dataset.error = text),
-    (input.parentNode.dataset.errorVisible = "true")
-  );
-}
-
-function inputValid(input) {
-  return (
-    (input.parentNode.dataset.error = ""),
-    (input.parentNode.dataset.errorVisible = "false")
-  );
-}
-
 function validate() {
-  var validateInputs = 0;
+  let validateInputs = 0;
 
-  for (var i = 0; i < inputs.length; i++) {
+  for (let i = 0; i < inputs.length; i++) {
     if (inputs[i].parentNode.dataset.error == "") {
       validateInputs++;
     }
   }
   if (inputs.length == validateInputs) {
     document.getElementById("inscription").style.display = "none";
-    document.getElementById("form-valid").style.display = "block";
+    document.getElementById("form-valid").childNodes.style.display = "block";
   }
 }
